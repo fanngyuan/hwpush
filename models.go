@@ -20,8 +20,8 @@ type MessageBody struct {
 }
 
 type MessageAction struct {
-	ActionType int `json:"type"`
-	//Param      map[string]string `json:"param"`
+	ActionType int               `json:"type"`
+	Param      map[string]string `json:"param"`
 }
 
 type Message struct {
@@ -31,8 +31,8 @@ type Message struct {
 }
 
 type Hps struct {
-	Msg Message `json:"msg"`
-	//Ext map[string]string `json:"ext"`
+	Msg Message           `json:"msg"`
+	Ext map[string]string `json:"ext"`
 }
 
 type Notification struct {
@@ -46,18 +46,28 @@ func NewNotification(content, title string) Notification {
 	}
 	action := MessageAction{
 		ActionType: 3,
+		Param:      make(map[string]string),
 	}
 	message := Message{
-		MessageType: 1,
+		MessageType: 3,
 		Body:        body,
 		Action:      action,
 	}
 	hps := Hps{
 		Msg: message,
+		Ext: make(map[string]string),
 	}
 	return Notification{
 		Hps: hps,
 	}
+}
+
+func (this Notification) AddActionParam(key, value string) {
+	this.Hps.Msg.Action.Param[key] = value
+}
+
+func (this Notification) AddExtra(key, value string) {
+	this.Hps.Ext[key] = value
 }
 
 type Result struct {
