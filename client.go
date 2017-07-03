@@ -107,7 +107,6 @@ func (this HuaweiPushClient) SendPush(context context.Context, tokens []string, 
 		return nil, err
 	}
 	bys, _ := json.Marshal(message)
-	fmt.Println(string(bys))
 	params := strings.NewReader(fmt.Sprintf("access_token=%s&nsp_svc=openpush.message.api.send&nsp_ts=%d&expire_time=%s&device_token_list=%s&payload=%s", url.QueryEscape(this.oauthResponse.AccessToken), nspTs, url.QueryEscape(expireTime), url.QueryEscape(string(tokenString)), url.QueryEscape(string(payLoad))))
 	response, err := this.doPost(context, fmt.Sprintf(SENDPUSHURL, this.clientID), params)
 
