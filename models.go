@@ -31,9 +31,15 @@ type Message struct {
 }
 
 type Hps struct {
-	Msg Message           `json:"msg"`
-	Ext map[string]string `json:"ext"`
+	Msg Message `json:"msg"`
+	Ext Ext     `json:"ext"`
 }
+
+type Ext struct {
+	Customize *[]Element `json:"customize"`
+}
+
+type Element map[string]string
 
 type Notification struct {
 	Hps Hps `json:"hps"`
@@ -53,9 +59,13 @@ func NewNotification(content, title string) Notification {
 		Body:        body,
 		Action:      action,
 	}
+	customize := make([]Element, 0, 3)
+	ext := Ext{
+		Customize: &customize,
+	}
 	hps := Hps{
 		Msg: message,
-		Ext: make(map[string]string),
+		Ext: ext,
 	}
 	return Notification{
 		Hps: hps,
@@ -67,7 +77,10 @@ func (this Notification) AddActionParam(key, value string) {
 }
 
 func (this Notification) AddExtra(key, value string) {
-	this.Hps.Ext[key] = value
+	valueMap := make(map[string]string)
+	valueMap[key] = value
+	eliment := Element(valueMap)
+	*this.Hps.Ext.Customize = append(*this.Hps.Ext.Customize, eliment)
 }
 
 type Result struct {
